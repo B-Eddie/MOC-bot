@@ -1,26 +1,27 @@
-import os 
-from dotenv import load_dotenv
+import os
 import discord
 from discord.ext import commands
 
-load_dotenv()
 intents = discord.Intents.default()
-intents.message_content = True
-TOKEN = os.getenv('TOKEN')
+intents.message_content = True  # Required for handling slash command interactions
+bot = commands.Bot(command_prefix='!', intents=intents)
 
-client = commands.Bot(command_prefix="/", intents=intents)
+@bot.tree.command(  # Update here: Use bot.tree.command
+    name="ping",  # Name of the command (what users will type)
+    description="Checks the bot's latency"  # Short description for the command
+)
+async def ping(ctx):
+    await ctx.respond(f"Pong! Latency is {round(bot.latency * 1000)}ms")
 
-@client.event
+@bot.event
 async def on_ready():
-    print(f"{client.user.name} is ready")
+    print(f'Logged in as {bot.user} (ID: {bot.user.id})')
+    await bot.tree.sync()  # Sync commands with Discord
 
-@client.hybrid_command()
-async def sync(ctx: commands.Context):
-    await ctx.send("Syncing...")
-    await client.tree.sync()
-
-@client.command()
-async def hello(ctx):
-    await ctx.send("Hey there boyo!")
-
-client.run(token=TOKEN)
+# Retrieve the bot token from environment variable
+bot_token = os.environ.get('TOKEN')
+if bot_token is None:
+    print("Bot token not found in environment variable.")
+else:
+    # Run the bot with the retrieved token
+    bot.run(bot_token)
