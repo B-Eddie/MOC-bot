@@ -8,7 +8,7 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 tree = bot.tree
 
-@tree.command(name="info", description="Provides information about the bot")
+@tree.command(name="info", description="Provides information about MOC bot")
 async def info(interaction: discord.Interaction):
     embed = discord.Embed(
         title="Murder Of Code bot",
@@ -16,6 +16,11 @@ async def info(interaction: discord.Interaction):
         color=discord.Color.blue()
     )
     await interaction.response.send_message(embed=embed)
+
+@tree.command(name="brainrot_translator", description="Changes normal human phrases into brainrot phrases.")
+async def brainrot_translator(interaction: discord.Interaction, phrase: str):
+    translated_phrase = phrase.replace("normal", "brainrot").replace("human", "brainroteeee")
+    await interaction.response.send_message(translated_phrase)
 
 @bot.event
 async def on_ready():
