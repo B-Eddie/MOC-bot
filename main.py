@@ -3,8 +3,11 @@ from discord.ext import commands
 import os
 import csv
 
+import os
+
 phrase_dict = {}
-with open('brainrot.csv', mode='r') as infile:
+csv_path = os.path.join(os.path.dirname(__file__), 'brainrot.csv')
+with open(csv_path, mode='r') as infile:
     reader = csv.reader(infile)
     next(reader)  # Skip header
     for rows in reader:
@@ -15,7 +18,7 @@ with open('brainrot.csv', mode='r') as infile:
 # Function to replace phrases
 def translate_phrase(text):
     for normal_phrase, brainrot_phrase in phrase_dict.items():
-        text = text.replace(normal_phrase, brainrot_phrase)
+        text = text.replace(f" {normal_phrase} ", f" {brainrot_phrase} ")
     return text
 
 
