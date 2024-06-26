@@ -1,6 +1,23 @@
 import discord
 from discord.ext import commands
 import os
+import csv
+
+phrase_dict = {}
+with open('brainrot.csv', mode='r') as infile:
+    reader = csv.reader(infile)
+    next(reader)  # Skip header
+    for rows in reader:
+        normal_phrase = rows[0].strip().lower()
+        brainrot_phrase = rows[1].strip().lower()
+        phrase_dict[normal_phrase] = brainrot_phrase
+
+# Function to replace phrases
+def translate_phrase(text):
+    for normal_phrase, brainrot_phrase in phrase_dict.items():
+        text = text.replace(normal_phrase, brainrot_phrase)
+    return text
+
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -19,7 +36,7 @@ async def info(interaction: discord.Interaction):
 
 @tree.command(name="brainrot_translator", description="Changes normal human phrases into brainrot phrases.")
 async def brainrot_translator(interaction: discord.Interaction, phrase: str):
-    translated_phrase = phrase.replace("normal", "brainrot").replace("human", "brainroteeee")
+    translated_phrase = translate_phrase(phrase)
     await interaction.response.send_message(translated_phrase)
 
 @bot.event
