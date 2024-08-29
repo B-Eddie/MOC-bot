@@ -3,7 +3,9 @@ from discord.ext import commands
 import os
 import csv
 
-import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 phrase_dict = {}
 csv_path = os.path.join(os.path.dirname(__file__), 'brainrot.csv')
@@ -47,4 +49,4 @@ async def on_ready():
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
     await tree.sync()  # Sync commands with Discord
 
-bot.run(os.getenv('TOKEN'))
+bot.run(os.environ.get('TOKEN'))
