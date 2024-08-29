@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import os
 import csv
-
+import re
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -17,12 +17,15 @@ with open(csv_path, mode='r') as infile:
         brainrot_phrase = rows[1].strip().lower()
         phrase_dict[normal_phrase] = brainrot_phrase
 
-# Function to replace phrases
 def translate_phrase(text):
-    for normal_phrase, brainrot_phrase in phrase_dict.items():
-        text = text.replace(f" {normal_phrase} ", f" {brainrot_phrase} ")
-    return text
-
+    # changed to whole words only
+    pattern = re.compile(r'\b(' + '|'.join(re.escape(phrase) for phrase in phrase_dict.keys()) + r')\b', re.IGNORECASE)
+    
+    def replace(match):
+        normal_phrase = match.group(0).lower()
+        return phrase_dict.get(normal_phrase, match.group(0))
+    
+    return pattern.sub(replace, text)
 
 intents = discord.Intents.default()
 intents.message_content = True
